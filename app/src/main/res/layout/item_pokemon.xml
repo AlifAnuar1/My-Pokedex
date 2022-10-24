@@ -27,7 +27,7 @@
             android:weightSum="2">
 
             <ImageView
-                android:id="@+id/iv_news"
+                android:id="@+id/iv_pokemon"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="10dp"
@@ -48,12 +48,11 @@
                     android:layout_height="wrap_content"
                     android:text="Pokemon Name" />
 
-                <TextView
-                    android:id="@+id/tv_pokemonUrl"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Pokemon Url" />
+                <include
+                    android:id="@+id/type_layout"
+                    layout="@layout/layout_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
         </LinearLayout>

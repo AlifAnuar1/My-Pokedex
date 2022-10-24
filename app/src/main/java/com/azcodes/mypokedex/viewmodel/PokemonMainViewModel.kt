@@ -5,8 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.azcodes.mypokedex.enum.LoadingState
-import com.azcodes.mypokedex.model.Pokemon
-import com.azcodes.mypokedex.model.PokemonResponse
+import com.azcodes.mypokedex.model.*
 import com.azcodes.mypokedex.repository.ApiClient
 import com.azcodes.mypokedex.repository.ApiRepository
 import retrofit2.Call
@@ -18,16 +17,18 @@ class PokemonMainViewModel(
     = ApiRepository(ApiClient.apiInterface)
 ) : ViewModel() {
 
-    private var _pokemonLiveData = MutableLiveData<List<Pokemon>?>()
+    private var _pokemonDetailsListLiveData = MutableLiveData<ArrayList<PokemonDetailsVO>?>()
     private var _loadingState = MutableLiveData<LoadingState>()
 
-    val pokemonLiveData: LiveData<List<Pokemon>?>
-        get() = _pokemonLiveData
+    val pokemonDetailsListLiveData: LiveData<ArrayList<PokemonDetailsVO>?>
+        get() = _pokemonDetailsListLiveData
 
     val loadingState: MutableLiveData<LoadingState>
         get() = _loadingState
 
-    fun fetchPokemon(region: String) {
+    val pokemonList: ArrayList<PokemonDetailsVO> = ArrayList()
+
+    fun fetchPokemonDetailsList(region: String) {
 
         _loadingState.postValue(LoadingState.Loading)
 
@@ -69,27 +70,67 @@ class PokemonMainViewModel(
             }
         }
 
-        val client = apiRepository.getGen1Pokemon(limit.toString(), offset.toString())
-        client.enqueue(object : Callback<PokemonResponse> {
-            override fun onResponse(
-                call: Call<PokemonResponse>,
-                response: Response<PokemonResponse>
-            ) {
-                if (response.isSuccessful) {
-                    _loadingState.postValue(LoadingState.Success)
+        for (i in (offset + 1) until (offset + limit)) {
+            val client = apiRepository.getPokemonDetails("pokemon/$i")
+            client.enqueue(object : Callback<PokemonDetailsDAO> {
+                override fun onResponse(
+                    call: Call<PokemonDetailsDAO>,
+                    response: Response<PokemonDetailsDAO>
+                ) {
+                    if (response.isSuccessful) {
 
-                    _pokemonLiveData.postValue(response.body()?.result)
+                        val pokemonDetailsDAO: PokemonDetailsDAO
+
+                        if (response.body() != null) {
+
+                            pokemonDetailsDAO = response.body()!!
+                            pokemonDetailsDAO.let {
+
+                                val pokemonId = it.id
+                                val pokemonName = it.name
+                                val pokemonSprites = PokemonSpritesVO(
+                                    it.sprites.frontDefault
+                                )
+
+                                val pokemonType: ArrayList<PokemonTypesVO> = ArrayList()
+                                for (i in it.type.indices) {
+
+                                    val type = it.type[i].type.name
+                                    val typesCategory = PokemonTypesCategoryVO(type)
+                                    pokemonType.add(PokemonTypesVO(typesCategory))
+                                }
+
+                                val pokemonStats: ArrayList<PokemonStatsVO> = ArrayList()
+                                for (i in it.stats.indices) {
+
+                                    val stats = it.stats[i].baseStat
+                                    pokemonStats.add(PokemonStatsVO(stats))
+                                }
+
+                                val pokemonDetails = PokemonDetailsVO(
+                                    pokemonId,
+                                    pokemonName,
+                                    pokemonSprites,
+                                    pokemonType,
+                                    pokemonStats
+                                )
+
+                                pokemonList.add(pokemonDetails)
+                                _pokemonDetailsListLiveData.postValue(pokemonList)
+
+                            }
+                        }
+                    }
                 }
-            }
 
-            override fun onFailure(
-                call: Call<PokemonResponse>,
-                t: Throwable
-            ) {
-                _loadingState.postValue(LoadingState.Error)
-                Log.i("Error", t.message.toString())
-            }
-        })
+                override fun onFailure(
+                    call: Call<PokemonDetailsDAO>,
+                    t: Throwable
+                ) {
+                    Log.i("Error", t.message.toString())
+                }
+            })
+        }
     }
 
 }

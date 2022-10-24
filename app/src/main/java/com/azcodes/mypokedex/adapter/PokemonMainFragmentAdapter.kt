@@ -1,15 +1,20 @@
 package com.azcodes.mypokedex.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import coil.transform.CircleCropTransformation
 import com.azcodes.mypokedex.`interface`.OnItemClickedListener
 import com.azcodes.mypokedex.databinding.ItemPokemonBinding
-import com.azcodes.mypokedex.model.Pokemon
+import com.azcodes.mypokedex.model.PokemonDetailsVO
+import com.azcodes.mypokedex.model.PokemonTypesVO
 import com.azcodes.mypokedex.utils.Tools
 
+
 class PokemonMainFragmentAdapter(
-    private val pokemonList: List<Pokemon>
+    private val pokemonList: ArrayList<PokemonDetailsVO>
 ) :
     RecyclerView.Adapter<PokemonMainFragmentAdapter.PokemonMainFragmentViewHolder>() {
 
@@ -21,15 +26,63 @@ class PokemonMainFragmentAdapter(
     ) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bindItem(pokemon: Pokemon) {
+        fun bindItem(pokemon: PokemonDetailsVO) {
+
+            //Setup Pokemon Name
             binding.tvPokemonName.text = Tools.toUppercaseText(pokemon.name)
-            binding.tvPokemonUrl.text = pokemon.url
+
+            //Setup Pokemon Image
+            binding.ivPokemon.load(pokemon.sprites.frontDefault) {
+                transformations(CircleCropTransformation())
+            }
+
+            //Setup Pokemon Type
+            displayPokemonType(pokemon.type)
         }
 
         init {
             binding.root.setOnClickListener {
                 listener.onItemClicked(adapterPosition)
             }
+        }
+
+        fun displayPokemonType(list: List<PokemonTypesVO>) {
+
+            if (list.size > 1) {
+                val pokemonType1 = Tools.toUppercaseText(list[0].type.name)
+                binding.typeLayout.tvPokemonType1.text = pokemonType1
+                binding.typeLayout.cvPokemonTypes1.setCardBackgroundColor(
+                    binding.root.context.resources.getColor(
+                        Tools.displayTypes(
+                            pokemonType1
+                        )
+                    )
+                )
+
+                val pokemonType2 = Tools.toUppercaseText(list[1].type.name)
+                binding.typeLayout.tvPokemonType2.text = pokemonType2
+                binding.typeLayout.cvPokemonTypes2.setCardBackgroundColor(
+                    binding.root.context.resources.getColor(
+                        Tools.displayTypes(
+                            pokemonType2
+                        )
+                    )
+                )
+
+            } else {
+                val pokemonType1 = Tools.toUppercaseText(list[0].type.name)
+                binding.typeLayout.tvPokemonType1.text = pokemonType1
+                binding.typeLayout.cvPokemonTypes1.setCardBackgroundColor(
+                    binding.root.context.resources.getColor(
+                        Tools.displayTypes(
+                            pokemonType1
+                        )
+                    )
+                )
+
+                binding.typeLayout.cvPokemonTypes2.visibility = View.GONE
+            }
+
         }
     }
 

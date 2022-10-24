@@ -1,7 +1,5 @@
 package com.azcodes.mypokedex.enum
 
-import com.azcodes.mypokedex.R
-
 enum class PokemonTypes(type: String) {
     Normal("Normal"),
     Fire("Fire"),

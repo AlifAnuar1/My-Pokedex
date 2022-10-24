@@ -10,8 +10,6 @@ import com.azcodes.mypokedex.model.IntroObjects
 
 class PokemonHomeActivity : AppCompatActivity() {
 
-    private var viewPager2: ViewPager2? = null
-
     private val binding: ActivityPokemonHomeBinding by lazy {
         ActivityPokemonHomeBinding.inflate(layoutInflater)
     }
@@ -25,7 +23,7 @@ class PokemonHomeActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        viewPager2?.unregisterOnPageChangeCallback(pagerCallBack)
+        binding.vpViewPager.unregisterOnPageChangeCallback(pagerCallBack)
     }
 
     private val pagerCallBack = object : ViewPager2.OnPageChangeCallback() {
@@ -40,7 +38,7 @@ class PokemonHomeActivity : AppCompatActivity() {
             } else {
                 binding.btnNext.text = "Next"
                 binding.btnNext.setOnClickListener {
-                    viewPager2?.currentItem = position + 1
+                    binding.vpViewPager.currentItem = position + 1
                 }
             }
         }

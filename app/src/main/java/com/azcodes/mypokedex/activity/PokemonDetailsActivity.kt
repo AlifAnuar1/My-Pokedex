@@ -8,8 +8,8 @@ import coil.load
 import coil.transform.CircleCropTransformation
 import com.azcodes.mypokedex.databinding.ActivityPokemonDetailsBinding
 import com.azcodes.mypokedex.enum.LoadingState
-import com.azcodes.mypokedex.model.PokemonDetails
-import com.azcodes.mypokedex.model.PokemonTypes
+import com.azcodes.mypokedex.model.PokemonDetailsVO
+import com.azcodes.mypokedex.model.PokemonTypesVO
 import com.azcodes.mypokedex.utils.Tools
 import com.azcodes.mypokedex.viewmodel.PokemonDetailsViewModel
 
@@ -49,14 +49,14 @@ class PokemonDetailsActivity : AppCompatActivity() {
             checkLoadingStatus(it)
         }
 
-        viewModel.pokemonDetailsLiveData.observe(this) {
+        viewModel.pokemonDetailsVOLiveData.observe(this) {
             if (it != null) {
                 setupUI(it)
             }
         }
     }
 
-    private fun setupUI(pokemonDetails: PokemonDetails) {
+    private fun setupUI(pokemonDetails: PokemonDetailsVO) {
 
         //Setup Pokemon Id
         pokemonDetails.id.let {
@@ -89,7 +89,7 @@ class PokemonDetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun displayPokemonType(list: List<PokemonTypes>) {
+    private fun displayPokemonType(list: List<PokemonTypesVO>) {
 
         if (list.size > 1) {
             val pokemonType1 = Tools.toUppercaseText(list[0].type.name)

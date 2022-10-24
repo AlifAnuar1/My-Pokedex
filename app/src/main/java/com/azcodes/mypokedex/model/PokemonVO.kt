@@ -1,26 +1,20 @@
 package com.azcodes.mypokedex.model
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-
 // --------------------------------------------------------------------------------------------
 // -------------------------------------- Pokemon Main ----------------------------------------
 // --------------------------------------------------------------------------------------------
 
-data class PokemonMain(
+data class PokemonVO(
     var name: String,
-    val url: String,
-    val pokemonDetails: PokemonDetails?,
+    val pokemonDetails: PokemonDetailsVO,
 )
 
 // --------------------------------------------------------------------------------------------
 // -------------------------------------- Pokemon List ----------------------------------------
 // --------------------------------------------------------------------------------------------
 
-data class Pokemon(
-    @Json(name = "name")
+data class PokemonListVO(
     var name: String,
-    @Json(name = "url")
     val url: String
 )
 
@@ -28,31 +22,23 @@ data class Pokemon(
 // ------------------------------------ Pokemon Details ---------------------------------------
 // --------------------------------------------------------------------------------------------
 
-@JsonClass(generateAdapter = true)
-data class PokemonDetails(
-    @Json(name = "id")
-    val id: Int,
-    @Json(name = "name")
+data class PokemonDetailsVO(
+    var id: Int,
     val name: String,
-    @Json(name = "sprites")
-    val sprites: PokemonSprites,
-    @Json(name = "types")
-    val type: List<PokemonTypes>,
-    @Json(name = "stats")
-    val stats: List<PokemonStats>
+    val sprites: PokemonSpritesVO,
+    val type: List<PokemonTypesVO>,
+    val stats: List<PokemonStatsVO>
 )
 
 // --------------------------------------------------------------------------------------------
 // ------------------------------------- Pokemon Types ----------------------------------------
 // --------------------------------------------------------------------------------------------
 
-data class PokemonTypes(
-    @Json(name = "type")
-    val type: PokemonTypesCategory
+data class PokemonTypesVO(
+    val type: PokemonTypesCategoryVO
 )
 
-data class PokemonTypesCategory(
-    @Json(name = "name")
+data class PokemonTypesCategoryVO(
     val name: String,
 )
 
@@ -60,8 +46,7 @@ data class PokemonTypesCategory(
 // ------------------------------------- Pokemon Stats ----------------------------------------
 // --------------------------------------------------------------------------------------------
 
-data class PokemonStats(
-    @Json(name = "base_stat")
+data class PokemonStatsVO(
     val baseStat: String
 )
 
@@ -69,16 +54,15 @@ data class PokemonStats(
 // ----------------------------------- Pokemon Sprites ----------------------------------------
 // --------------------------------------------------------------------------------------------
 
-data class PokemonSprites(
-    @Json(name = "front_default")
-    val frontDefault: String
+data class PokemonSpritesVO(
+    val frontDefault: String = ""
 )
 
 // --------------------------------------------------------------------------------------------
 // ----------------------------------- Pokemon Response ---------------------------------------
 // --------------------------------------------------------------------------------------------
 
-data class PokemonResponse(
-    @Json(name = "results")
-    var result: List<Pokemon>
+data class PokemonResponseVO(
+    var result: List<PokemonListDAO>
 )
+

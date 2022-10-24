@@ -13,7 +13,6 @@ import com.azcodes.mypokedex.activity.PokemonDetailsActivity
 import com.azcodes.mypokedex.adapter.PokemonMainFragmentAdapter
 import com.azcodes.mypokedex.databinding.FragmentPokemonMainBinding
 import com.azcodes.mypokedex.model.PokemonMainDetails
-import com.azcodes.mypokedex.utils.Tools
 import com.azcodes.mypokedex.viewmodel.PokemonMainViewModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -66,8 +65,8 @@ class PokemonMainFragment : Fragment() {
 
         //checkSharedPreference(region)
 
-        viewModel.fetchPokemon(region)
-        viewModel.pokemonLiveData.observe(viewLifecycleOwner) {
+        viewModel.fetchPokemonDetailsList(region)
+        viewModel.pokemonDetailsListLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 val adapter = PokemonMainFragmentAdapter(it)
                 binding.vpPokemonMainFragment.adapter = adapter
@@ -77,7 +76,7 @@ class PokemonMainFragment : Fragment() {
                 adapter.setupOnItemClickListener(object : OnItemClickedListener {
                     override fun onItemClicked(position: Int) {
 
-                        val currentPokemonId = Tools.setPokemonId(position, region) + 1
+                        val currentPokemonId = it[position].id
 
                         val intent = Intent(context, PokemonDetailsActivity::class.java)
                         intent.putExtra("id", currentPokemonId)
